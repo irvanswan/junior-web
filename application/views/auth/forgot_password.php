@@ -18,14 +18,19 @@
       <div class='col-xs-12 col-md-4'>
         <div class='card px-4 py-5 shadow-lg border-0'>
           <div class='card-body'>
-            <form>
+            <?php if($this->session->flashdata('msgFailed')){ ?>
+              <div class='alert alert-danger'><?= $this->session->flashdata('msgFailed') ?></div>
+            <?php }else if($this->session->flashdata('msgSuccess')){?>
+              <div class='alert alert-success'><?= $this->session->flashdata('msgSuccess') ?></div>
+            <?php } ?>
+            <form action='<?= site_url('auth/process_forgot')?>' method="POST">
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label lobster">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <input type="email" name='email' class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
                 <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
               </div>
               <div class="d-grid gap-2">
-                <button class="btn btn-primary lobster py-2" type="button" id='btn_send'>Send</button>
+                <input type="submit" value="Send" class='btn btn-primary lobster py-2'/>
               </div>
             </form>
             <label class="lobster mt-3">Clik here back to Login !<a href="<?=site_url('auth/login')?>"> Click Me !</a></label>

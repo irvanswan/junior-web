@@ -89,4 +89,50 @@ class Auth extends CI_Controller
             }
         }
     }
+
+    public function process_forgot(){
+        $email = $this->input->post('email');
+        $user = $this->mUser->check_user($email);
+        $teks = $this->code();
+        if($user){
+            $sending_email = $this->send_email($email, $teks);
+            if($sending_email){
+                $this->session->set_flashdata('msgSuccess', 'Password sudah terkirim');
+            }else{
+                $this->session->set_flashdata('msgFailed', 'Kesalahan teknis');
+            }
+        }else{
+            $this->session->set_flashdata('msgFailed', 'Email tidak ditemukan');
+        }
+    }
+
+    private function send_email($email,$teks){
+        $config['mailtype'] = 'text';
+        $config['protocol'] = 'smtp';
+        $config['smtp_host'] = 'smtp.mailtrap.io';
+        $config['smtp_user'] = '28ab355f70ec5c';
+        $config['smtp_pass'] = 'd76f509d65363c';
+        $config['smtp_port'] = 2525;
+        $config['newline'] = "\r\n";
+
+        $this->load->library('email', $config);
+
+        $this->email->from('no-reply@junior-web', 'Junior web');
+          $this->email->to($email);
+          $this->email->subject('Contoh Kirim Email Dengan Codeigniter');
+          $this->email->message('pastekan token berikut '.$teks);
+
+          if($this->email->send()) {
+               return true;
+          }
+          else {
+              return false;
+          }
+    }
+
+    private function code(){
+        $karakter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789';
+        $shuffle  = str_shuffle($karakter);
+        return $shuffle;
+    }
 }
